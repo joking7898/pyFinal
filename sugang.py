@@ -1,10 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
 import tkinter.font as tkFont
+import tkinter.messagebox
 
 
 # 성적 딕셔너리 선언.
 score = {}
+
+def Msg_no_name_input():
+    tk.messagebox.showwarning("경고", "이름을 입력하여주십쇼.")
 
 def student_input(text1, text2, text3):
     print("함수 실행 ㄱㄱ")
@@ -14,8 +18,8 @@ def student_input(text1, text2, text3):
 
     if text1 in score:
         print("학생이 등록되어 있습니다.")
-    elif len(text1)==0 or len(text2)==0 or len(text3)==0:
-        print("입력을 다시해주세요.")
+    elif len(text1) == 0 or len(text2) == 0 or len(text3) == 0:
+        tk.messagebox.showwarning("경고", "이름을 입력하여주십쇼.")
     else:
         # score[이름][영어] ={}
         score[text1] = {}  # 성적 딕셔너리 초기화
@@ -23,9 +27,9 @@ def student_input(text1, text2, text3):
         score[text1]['수학'] = text2
         print("학생이 성적을 입력하였습니다.")
 
+
 #성적입력
 def popup_insert():
-
     print("========================")
     print("학생 성적 입력 팝업 실행..")
     print("========================")
@@ -78,24 +82,83 @@ def popup_print():
             print("\n")
 # 성적삭제
 def popup_delete():
+
+    print("========================")
+    print("성적 삭제 팝업 실행..")
+    print("========================")
+
+    win = tk.Toplevel()
+    win.wm_title("학생 이름 입력")
+    win.geometry("350x100+250+250")
+
+    inputname = tk.StringVar()
+    label = tk.Label(win, text="Name")
+    entryname = tk.Entry(win, width=30, textvariable=inputname)
+
+    #성적입력 버튼.
+    btn1 = tk.Button(win, text="이름입력", width=10,
+                     command=lambda: [student_delete(inputname.get()), win.destroy()])
+    #win.destory pop up 창 닫게 하는 부분.
+    btn2 = tk.Button(win, text="닫기", width=10, command=win.destroy)
+
+    # 배치.
+    label.grid(row=0, column=0)
+    entryname.grid(row=0, column=1, padx=10)
+    btn1.grid(row=5, column=0)
+    btn2.grid(row=5, column=1)
+
+# 성적변경
+def popup_alt():
+
+    print("========================")
+    print("성적 변경 팝업 실행..")
+    print("========================")
+
+    win = tk.Toplevel()
+    win.wm_title("학생 이름 입력")
+    win.geometry("350x100+250+250")
+
+    inputname = tk.StringVar()
+    label = tk.Label(win, text="Name")
+    entryname = tk.Entry(win, width=30, textvariable=inputname)
+
+    #성적입력 버튼.
+    btn1 = tk.Button(win, text="이름입력", width=10,
+                     command=lambda: [student_delete(inputname.get()), win.destroy()])
+    #win.destory pop up 창 닫게 하는 부분.
+    btn2 = tk.Button(win, text="닫기", width=10, command=win.destroy)
+
+    # 배치.
+    label.grid(row=0, column=0)
+    entryname.grid(row=0, column=1, padx=10)
+    btn1.grid(row=5, column=0)
+    btn2.grid(row=5, column=1)
+
+
+
+def student_delete(text):
     print("\n\n >>성적삭제<<")
+    print(len(text))
     # 해당 딕셔너리의 크기가 0일때
     if len(score) == 0:
-        print("성적삭제 할 학생이 없습니다.")
+        Msg_no_student()
+    elif len(text) == 0:
+        Msg_no_name_input()
     else:
-        iname = input("학생이름 입력 : ")
-        # iname으로 학생이름 입력 받아서 있을 경우 del()사용하여 성적 삭제.
-        if iname in score:
-            del (score[iname])
+        if text in score:
+            del (score[text])
             print("성적삭제완료")
         else:
-            print("성적삭제 할 학생이 없습니다.")
+            Msg_no_student()
+
 #성적변경
-def popup_change():
+def function_change(text):
     print("\n\n >>성적변경<<")
     # 해당 딕셔너리의 크기가 0일때
     if len(score) == 0:
-        print("성적변경 할 학생이 없습니다.")
+        Msg_no_student()
+    elif len(text) == 0:
+        Msg_no_name_input()
     else:
         # 학생이름 입력
         iname = input("학생이름 입력 : ")
@@ -111,12 +174,15 @@ def popup_change():
             score[iname]['수학'] = imat
             print("학생이  성적을 입력하였습니다.")
         else:
-            print("성적변경 할 학생이 없습니다.")
+            Msg_no_student()
+def Msg_no_student():
+    tk.messagebox.showwarning("경고", "성적변경 할 학생이 없습니다.")
+
 # 성적차트
-def popup_stack():
+def print_stack():
     print("\n\n >>성적차트<<")
     if len(score) == 0:
-        print("출력할 학생이 없습니다.")
+        Msg_no_student()
     else:
         for name, info in score.items():
             print("이름 :", name)
@@ -125,7 +191,7 @@ def popup_stack():
             half = 0
             for k, v in info.items():
                 # 점수를 sum에 합계.
-                sum = sum + v
+                sum = sum + int(v)
                 # 10점 단위로 구분할수 있도록 int형으로 계산.
                 half = int(sum / 10)
             print("총점 : ", end="")
@@ -135,17 +201,17 @@ def popup_stack():
             print()
             print("------------------")
 # 성적평균
-def popup_divied():
+def function_divied():
     print("\n\n >>성적평균<<")
     if len(score) == 0:
-        print("출력할 학생이 없습니다.")
+        Msg_no_student()
     else:
         for name, info in score.items():
             print("이름 :", name)
             sum = 0
             for k, v in info.items():
                 # 성적을 sum변수에 집어넣음.
-                sum = sum + v
+                sum = sum + int(v)
             # sum을 과목 개수별로 출력하여 모든 학생 평균 출력.
             print("평균 : ", sum / 2)
 # # 성적추가메뉴
@@ -174,12 +240,15 @@ class MainFrame(ttk.Frame):
         # txt.pack()
 
         # 버튼 각각 추가
-        self.btn1 = tk.Button(root, text="성적입력", width=10 , font=font2, command=popup_insert)
-        self.btn2 = tk.Button(root, text="성적출력", width=10 , font=font2, command=popup_print)
-        self.btn3 = tk.Button(root, text="성적삭제", width=10 , font=font2)
-        self.btn4 = tk.Button(root, text="성적변경", width=10 , font=font2)
-        self.btn5 = tk.Button(root, text="성적차트", width=10 , font=font2)
-        self.btn6 = tk.Button(root, text="성적평균", width=10 , font=font2)
+        self.btn1 = tk.Button(root, text="성적입력", width=10, font=font2, command=popup_insert)
+        self.btn2 = tk.Button(root, text="성적출력", width=10, font=font2, command=popup_print)
+        self.btn3 = tk.Button(root, text="성적삭제", width=10, font=font2, command=popup_delete)
+        self.btn4 = tk.Button(root, text="성적변경", width=10, font=font2, command=popup_alt)
+        self.btn5 = tk.Button(root, text="성적차트", width=10, font=font2, command=print_stack)
+        self.btn6 = tk.Button(root, text="성적평균", width=10, font=font2, command=function_divied)
+        self.btn7 = tk.Button(root, text="추가기능", width=10, font=font2)
+        self.btn8 = tk.Button(root, text="종   료", width=10, font=font2, command=root.destroy)
+
 
         # 버튼 x,y좌표로 place
         self.btn1.place(x=40, y=200)
@@ -188,11 +257,13 @@ class MainFrame(ttk.Frame):
         self.btn4.place(x=40, y=305)
         self.btn5.place(x=265, y=305)
         self.btn6.place(x=480, y=305)
+        self.btn7.place(x=40, y=410)
+        self.btn8.place(x=480, y=410)
 
 
 root = tk.Tk()
 root.title("성적관리 프로그램.")
-root.geometry("700x600+100+100")
+root.geometry("700x600+350+100")
 root.resizable(False, False)
 
 app = MainFrame(root)
