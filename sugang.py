@@ -7,9 +7,15 @@ import tkinter.messagebox
 # 성적 딕셔너리 선언.
 score = {}
 
+# 알림 함수
+def Msg_no_student():
+    tk.messagebox.showwarning("경고", "성적변경 할 학생이 없습니다.")
+def Msg_no_print_student():
+    tk.messagebox.showwarning("경고", "콘솔에 출력 할 학생이 없습니다.")
 def Msg_no_name_input():
     tk.messagebox.showwarning("경고", "이름을 입력하여주십쇼.")
 
+# 기능함수
 def student_input(text1, text2, text3):
     print("함수 실행 ㄱㄱ")
     print(text1)
@@ -28,7 +34,7 @@ def student_input(text1, text2, text3):
         print("학생이 성적을 입력하였습니다.")
 
 
-#성적입력
+# 성적입력
 def popup_insert():
     print("========================")
     print("학생 성적 입력 팝업 실행..")
@@ -48,22 +54,22 @@ def popup_insert():
     entrymath = tk.Entry(win, width=30, textvariable=inputmath)
     entryeng = tk.Entry(win, width=30, textvariable=inputeng)
 
-    #성적입력 버튼.
+    # 성적입력 버튼.
     btn1 = tk.Button(win, text="성적입력", width=10,
                      command=lambda: [student_input(inputname.get(), inputmath.get(), inputeng.get()), win.destroy()])
-    #win.destory pop up 창 닫게 하는 부분.
+    # win.destory pop up 창 닫게 하는 부분.
     btn2 = tk.Button(win, text="닫기", width=10, command=win.destroy)
 
 
-    # 배치.
-    label.grid(row=0, column=0)
-    label1.grid(row=1, column=0)
-    label2.grid(row=2, column=0)
-    entryname.grid(row=0, column=1, padx=10)
-    entrymath.grid(column=1, row=1, padx=10)
-    entryeng.grid(column=1, row=2, padx=10)
-    btn1.grid(row=5, column=0)
-    btn2.grid(row=5, column=1)
+    # 배치 place 사용.
+    label.place(x=20, y=20)
+    label1.place(x=20, y=60)
+    label2.place(x=20, y=100)
+    entryname.place(x=80, y=20)
+    entrymath.place(x=80, y=60)
+    entryeng.place(x=80, y=100)
+    btn1.place(x=50, y=150)
+    btn2.place(x=200, y=150)
 
 
 # 성적출력
@@ -72,7 +78,7 @@ def popup_print():
     print("학생 출력  팝업 실행..")
     print("========================")
     if len(score) == 0:
-        print("출력할 학생이 없습니다.")
+        Msg_no_student()
     else:
         # {홍길동:{영어:90, 수학:30}}
         for name, info in score.items():
@@ -102,10 +108,10 @@ def popup_delete():
     btn2 = tk.Button(win, text="닫기", width=10, command=win.destroy)
 
     # 배치.
-    label.grid(row=0, column=0)
-    entryname.grid(row=0, column=1, padx=10)
-    btn1.grid(row=5, column=0)
-    btn2.grid(row=5, column=1)
+    label.place(x=20, y=20)
+    entryname.place(x=80, y=20)
+    btn1.place(x=50, y=50)
+    btn2.place(x=200, y=50)
 
 # 성적변경
 def popup_alt():
@@ -124,17 +130,49 @@ def popup_alt():
 
     #성적입력 버튼.
     btn1 = tk.Button(win, text="이름입력", width=10,
-                     command=lambda: [student_delete(inputname.get()), win.destroy()])
+                     command=lambda: [popup_alt2(inputname.get()), win.destroy()])
     #win.destory pop up 창 닫게 하는 부분.
     btn2 = tk.Button(win, text="닫기", width=10, command=win.destroy)
 
     # 배치.
-    label.grid(row=0, column=0)
-    entryname.grid(row=0, column=1, padx=10)
-    btn1.grid(row=5, column=0)
-    btn2.grid(row=5, column=1)
+    label.place(x=20, y=20)
+    entryname.place(x=80, y=20)
+    btn1.place(x=50, y=50)
+    btn2.place(x=200, y=50)
 
+def popup_alt2(text):
+    if text in score:
+        print("========================")
+        print("성적 변경 팝업 실행..")
+        print("========================")
 
+        win = tk.Toplevel()
+        win.wm_title("학생 성적 입력")
+        win.geometry("350x200+250+250")
+
+        inputmath = tk.StringVar()
+        inputeng = tk.StringVar()
+        label1 = tk.Label(win, text="Math")
+        label2 = tk.Label(win, text="English")
+        entrymath = tk.Entry(win, width=30, textvariable=inputmath)
+        entryeng = tk.Entry(win, width=30, textvariable=inputeng)
+
+        # 성적입력 버튼.
+        btn1 = tk.Button(win, text="성적입력", width=10,
+                         command=lambda: [function_altscore(text, inputmath.get(), inputeng.get()),
+                                          win.destroy()])
+        # win.destory pop up 창 닫게 하는 부분.
+        btn2 = tk.Button(win, text="닫기", width=10, command=win.destroy)
+
+        # 배치 place 사용.
+        label1.place(x=20, y=20)
+        label2.place(x=20, y=60)
+        entrymath.place(x=80, y=20)
+        entryeng.place(x=80, y=60)
+        btn1.place(x=50, y=150)
+        btn2.place(x=200, y=150)
+    else:
+        Msg_no_student()
 
 def student_delete(text):
     print("\n\n >>성적삭제<<")
@@ -160,29 +198,26 @@ def function_change(text):
     elif len(text) == 0:
         Msg_no_name_input()
     else:
-        # 학생이름 입력
-        iname = input("학생이름 입력 : ")
-        # score에 입력한 학생이름이 있을 경우
-        if iname in score:
-            # 영어 성적 입력.
-            ieng = int(input("영어성적 : "))
-            # 영어성적 교체
-            score[iname]['영어'] = ieng
-            # 수학 성적 입력.
-            imat = int(input("수학성적 : "))
-            # 수학성적 교체
-            score[iname]['수학'] = imat
-            print("학생이  성적을 입력하였습니다.")
-        else:
-            Msg_no_student()
-def Msg_no_student():
-    tk.messagebox.showwarning("경고", "성적변경 할 학생이 없습니다.")
+        function_altscore(text)
+
+#성적 변경.
+def function_altscore(text, text1, text2):
+    print("\n\n >>성적변경<<")
+    # score에 입력한 학생이름이 있을 경우
+    if text in score:
+        # 영어성적 교체
+        score[text]['영어'] = text2
+        # 수학성적 교체
+        score[text]['수학'] = text1
+        print("학생이  성적을 입력하였습니다.")
+    else:
+        Msg_no_student()
 
 # 성적차트
 def print_stack():
     print("\n\n >>성적차트<<")
     if len(score) == 0:
-        Msg_no_student()
+        Msg_no_print_student()
     else:
         for name, info in score.items():
             print("이름 :", name)
@@ -204,7 +239,7 @@ def print_stack():
 def function_divied():
     print("\n\n >>성적평균<<")
     if len(score) == 0:
-        Msg_no_student()
+        Msg_no_print_student()
     else:
         for name, info in score.items():
             print("이름 :", name)
@@ -214,12 +249,35 @@ def function_divied():
                 sum = sum + int(v)
             # sum을 과목 개수별로 출력하여 모든 학생 평균 출력.
             print("평균 : ", sum / 2)
-# # 성적추가메뉴
-# def popup_new():
+# 성적추가메뉴
+def popup_new():
+    print("\n\n >>성적 평가<<")
+    if len(score) == 0:
+        Msg_no_print_student()
+    else:
+        for name, info in score.items():
+            print("이름 :", name)
+            count = 0
+            for k, v in info.items():
+                num = int(v)
+                if count == 1:
+                    print(" --------수학과목--------- ")
+                else:
+                    print(" --------영어과목--------- ")
+                if num < 60:
+                    print(v, "점 F 입니다.")
+                elif num < 70 and num <= 60:
+                    print(v, "점 D 입니다.")
+                elif num < 80 and num <= 70:
+                    print(v, "점 C 입니다.")
+                elif num < 90 and num <= 80:
+                    print(v, "점 B 입니다.")
+                else:
+                    print(v, "점 A 입니다.")
+                count = count + 1
 
 # 프로그램 실행시 메인 프레임 불러오는 코드.
 class MainFrame(ttk.Frame):
-
     def __init__(self, master):
         # argument 변환을 통해서 class 안에서 이렇게 진행을 해주어야 함.
         font1 = tkFont.Font(root=root.master, family="Malgun Gothic", size=35)
@@ -246,7 +304,7 @@ class MainFrame(ttk.Frame):
         self.btn4 = tk.Button(root, text="성적변경", width=10, font=font2, command=popup_alt)
         self.btn5 = tk.Button(root, text="성적차트", width=10, font=font2, command=print_stack)
         self.btn6 = tk.Button(root, text="성적평균", width=10, font=font2, command=function_divied)
-        self.btn7 = tk.Button(root, text="추가기능", width=10, font=font2)
+        self.btn7 = tk.Button(root, text="등급확인", width=10, font=font2, command=popup_new)
         self.btn8 = tk.Button(root, text="종   료", width=10, font=font2, command=root.destroy)
 
 
